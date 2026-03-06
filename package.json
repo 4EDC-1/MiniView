@@ -1,20 +1,16 @@
 {
   "name": "miniview",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A lightweight, always-on-top developer window with live hot-reload support.",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron test.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": ["electron", "hot-reload", "developer-tool", "mini-view"],
+  "author": "<4EDC@outlook.com>",
+  "license": "MIT",
   "dependencies": {
-    "chokidar": "^5.0.0",
-    "electron": "^40.8.0"
-  },
-  "devDependencies": {
-    "electron-reload": "^2.0.0-alpha.1"
+    "chokidar": "^3.5.3",
+    "electron": "^26.2.0"
   }
 }
