@@ -1,0 +1,21 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Electron build outputs (optional)
+dist/
+out/
+
+# VSCode settings (optional)
+.vscode/
+
+# Environment files
+.env
