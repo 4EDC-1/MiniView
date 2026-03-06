@@ -1,57 +1,71 @@
+// mini-view-lib (index.js)
 const { app, BrowserWindow } = require("electron");
 const chokidar = require("chokidar");
 const path = require("path");
-
-let win;
+const fs = require("fs");
 
 /**
- * Starts MiniView with a specified content file.
- * @param {string} contentFilePath - Path to a JS file exporting HTML string.
+ * Main function to start the MiniView.
+ * @param {string} filePath - Path to the HTML file to be previewed.
  */
-function startMiniView(contentFilePath) {
+function startMiniView(filePath) {
+    let win;
+    
+    // تحويل المسار المعطى لمسار مطلق لضمان الوصول للملف من أي مكان
+    const absolutePath = path.isAbsolute(filePath) 
+        ? filePath 
+        : path.resolve(process.cwd(), filePath);
 
-  function createWindow() {
-    win = new BrowserWindow({
-      width: 400,
-      height: 300,
-      alwaysOnTop: true,
-      title: "MiniView",
-      webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false
-      }
+    function createWindow() {
+        // التأكد من وجود الملف لتجنب كراش التطبيق
+        if (!fs.existsSync(absolutePath)) {
+            console.error(`[MiniView] Error: File not found at ${absolutePath}`);
+            return;
+        }
+
+        win = new BrowserWindow({
+            width: 400,
+            height: 300,
+            alwaysOnTop: true, // ميزة المكتبة الأساسية
+            frame: true,       // إبقاء الإطار للتحكم بالحجم
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true
+            }
+        });
+
+        // تحميل الملف
+        win.loadFile(absolutePath);
+
+        // مراقبة الملف الأساسي وأي ملفات بجانبه (CSS/JS) في نفس المجلد
+        const watcher = chokidar.watch(path.dirname(absolutePath), {
+            ignoreInitial: true
+        });
+
+        watcher.on("change", (changedPath) => {
+            console.log(`[MiniView] File changed: ${path.basename(changedPath)}. Reloading...`);
+            if (win) win.reload();
+        });
+
+        win.on('closed', () => {
+            watcher.close();
+            win = null;
+        });
+    }
+
+    // إدارة تشغيل Electron
+    app.whenReady().then(() => {
+        createWindow();
+
+        app.on("activate", () => {
+            if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        });
     });
 
-    // Load empty window with div to render content
-    win.loadURL("data:text/html;charset=utf-8," + encodeURIComponent(`
-      <div id="root" style="font-family:sans-serif;"></div>
-      <script>
-        const { ipcRenderer } = require('electron');
-        ipcRenderer.on('update-content', (_, html) => {
-          document.getElementById('root').innerHTML = html;
-        });
-      </script>
-    `));
-
-    render(); // Initial render
-  }
-
-  function render() {
-    if (win) {
-      // Clear require cache to reload updated content
-      delete require.cache[require.resolve(contentFilePath)];
-      const html = require(contentFilePath);
-      win.webContents.send("update-content", html);
-    }
-  }
-
-  // Watch the content file for changes
-  chokidar.watch(contentFilePath).on("change", () => {
-    console.log("Content updated! Refreshing MiniView...");
-    render();
-  });
-
-  app.whenReady().then(createWindow);
+    // إغلاق البرنامج عند إغلاق النافذة (ما عدا الماك)
+    app.on("window-all-closed", () => {
+        if (process.platform !== "darwin") app.quit();
+    });
 }
 
 module.exports = { startMiniView };

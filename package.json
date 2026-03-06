@@ -1,21 +1,28 @@
 {
-  "name": "miniview",
+  "name": "mini-view",        
   "version": "1.0.0",
-  "description": "A lightweight, always-on-top developer window with live hot-reload support.",
-  "main": "src/main.js",
+  "description": "MiniView is an Electron-based library to display HTML content in a floating window.",
+  "main": "index.js",         
   "scripts": {
-    "start": "electron test.js"
+    "start": "electron ."     
   },
   "keywords": [
-    "electron",
-    "hot-reload",
-    "developer-tool",
-    "mini-view"
+    "electron", "mini view", "floating window", "web content"
   ],
-  "author": "<4EDC@outlook.com>",
+  "author": "اسمك",
   "license": "MIT",
   "dependencies": {
-    "chokidar": "^3.5.3",
-    "electron": "^26.6.10"
+    "electron": "^X.X.X",     
+    "chokidar": "^3.5.1"     
+  },
+  "devDependencies": {
+    "electron": "^X.X.X"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/اسمك/mini-view.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
