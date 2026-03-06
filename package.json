@@ -6,11 +6,16 @@
   "scripts": {
     "start": "electron test.js"
   },
-  "keywords": ["electron", "hot-reload", "developer-tool", "mini-view"],
+  "keywords": [
+    "electron",
+    "hot-reload",
+    "developer-tool",
+    "mini-view"
+  ],
   "author": "<4EDC@outlook.com>",
   "license": "MIT",
   "dependencies": {
     "chokidar": "^3.5.3",
-    "electron": "^26.2.0"
+    "electron": "^26.6.10"
   }
 }
